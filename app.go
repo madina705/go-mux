@@ -160,6 +160,16 @@ func (a *App) getProductsPriceLowToHigh(w http.ResponseWriter, r *http.Request) 
 	respondWithJSON(w, http.StatusOK, products)
 }
 
+func (a *App) getProductsPriceHighToLow(w http.ResponseWriter, r *http.Request) {
+	products, err := getProductsPriceHighToLow(a.DB)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, products)
+}
+
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/products", a.getProducts).Methods("GET")
 	a.Router.HandleFunc("/product", a.createProduct).Methods("POST")
@@ -167,4 +177,5 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
 	a.Router.HandleFunc("/products/l2h", a.getProductsPriceLowToHigh).Methods("GET")
+	a.Router.HandleFunc("/products/h2l", a.getProductsPriceHighToLow).Methods("GET")
 }

@@ -204,3 +204,22 @@ func TestGetProductsPriceLowToHigh(t *testing.T) {
 		t.Errorf("%f should be less than or equal to %f\n", products[0].Price, products[1].Price)
 	}
 }
+
+func TestGetProductsPriceHighToLow(t *testing.T) {
+	clearTable()
+	addProducts(2)
+
+	req, _ := http.NewRequest("GET", "/products/h2l", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	var products []product
+
+	json.Unmarshal(response.Body.Bytes(), &products)
+
+	if len(products) != 2 {
+		t.Errorf("No products returned, expected %d products\n", 2)
+	} else if products[0].Price < products[1].Price {
+		t.Errorf("%f should be more than or equal to %f\n", products[0].Price, products[1].Price)
+	}
+}
